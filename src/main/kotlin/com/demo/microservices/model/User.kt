@@ -16,6 +16,5 @@ data class User(
     val name: String,
 
     @field:Email(message = "The e-mail address must be valid")
-    @field:NotBlank(message = "Email é obrigatório")
     val email: String
 )
