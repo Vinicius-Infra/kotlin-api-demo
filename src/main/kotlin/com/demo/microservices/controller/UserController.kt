@@ -4,19 +4,43 @@ import com.demo.microservices.model.User
 import com.demo.microservices.service.UserService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import java.net.URI
+
 
 @RestController
 @RequestMapping("/users")
 class UserController(private val service: UserService) {
 
-    @GetMapping
-    fun getUsers(): List<User> = service.findAll()
+    @GetMapping(produces = ["application/json"])
+    fun getUsers(): ResponseEntity<List<User>> {
+        val users = service.findAll()
+        return if (users.isEmpty()) {
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.ok(users)
+        }
+    }
 
-    @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): User = service.findById(id)
+    @GetMapping("/{id}", produces = ["application/json"])
+    fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
+        val user = service.findById(id)
+        return if (user != null) {
+            ResponseEntity.ok(user)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
 
     @PostMapping(produces = ["application/json"])
-    fun createUser(@Valid @RequestBody user: User): User = service.save(user)
+    fun createUser(@Valid @RequestBody user: User): ResponseEntity<User> {
+    val saved = service.save(user)
+    val uri = URI.create("/users/${saved.id}")
+    return ResponseEntity.created(uri).body(saved)
+}
 
     @PutMapping("/{id}")
     fun updateUser(
