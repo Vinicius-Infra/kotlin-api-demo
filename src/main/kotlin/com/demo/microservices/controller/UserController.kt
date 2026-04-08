@@ -8,12 +8,18 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User API", description = "Endpoints for managing users")
 class UserController(private val service: UserService) {
 
+    @Operation(summary = "find all users", description = "return a users list or 204 status if the list isempty")
     @GetMapping(produces = ["application/json"])
     fun getUsers(): ResponseEntity<List<User>> {
         val users = service.findAll()
@@ -24,6 +30,11 @@ class UserController(private val service: UserService) {
         }
     }
 
+    @Operation(summary = "Find user by ID")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "User found"),
+        ApiResponse(responseCode = "404", description = "User not found")
+    ])
     @GetMapping("/{id}", produces = ["application/json"])
     fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
     val user = service.findById(id) // Se não achar, o código para aqui e vai pro ExceptionHandler
