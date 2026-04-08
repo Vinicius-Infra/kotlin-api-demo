@@ -81,6 +81,6 @@ UserNotFoundException: Exceção personalizada que retorna erro 404.
 
 Autor: Marcos Vinícius da Silva Barreto 
 LinkedIn: https://www.linkedin.com/in/vinicius-barreto-devops/  
-GitHub
+GitHub: https://github.com/Vinicius-Infra
 
 Developed with ❤️ and Kotlin.
