@@ -26,13 +26,9 @@ class UserController(private val service: UserService) {
 
     @GetMapping("/{id}", produces = ["application/json"])
     fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
-        val user = service.findById(id)
-        return if (user != null) {
-            ResponseEntity.ok(user)
-        } else {
-            ResponseEntity.notFound().build()
-        }
-    }
+    val user = service.findById(id) // Se não achar, o código para aqui e vai pro ExceptionHandler
+    return ResponseEntity.ok(user)
+}
 
 
     @PostMapping(produces = ["application/json"])
@@ -44,16 +40,16 @@ class UserController(private val service: UserService) {
 
     @PutMapping("/{id}")
     fun updateUser(
-        @Valid @PathVariable id: Long,
-        @RequestBody userDetails: User
-    ): User {
-        val user = service.findById(id)
-        val updated = user.copy(
-            name = userDetails.name,
-            email = userDetails.email
-        )
-        return service.save(updated)
-    }
+    @PathVariable id: Long,
+    @Valid @RequestBody userDetails: User
+): ResponseEntity<User> {
+    val user = service.findById(id)
+    val updated = user.copy(
+        name = userDetails.name,
+        email = userDetails.email
+    )
+    return ResponseEntity.ok(service.save(updated))
+}
 
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long) {

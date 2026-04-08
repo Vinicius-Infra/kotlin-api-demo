@@ -3,6 +3,8 @@ package com.demo.microservices.service
 import com.demo.microservices.model.User
 import com.demo.microservices.repository.UserRepository
 import org.springframework.stereotype.Service
+import com.demo.microservices.exception.UserNotFoundException
+
 
 @Service
 class UserService(private val repository: UserRepository) {
@@ -11,8 +13,9 @@ class UserService(private val repository: UserRepository) {
 
     fun findById(id: Long): User =
         repository.findById(id).orElseThrow {
-            RuntimeException("Usuário não encontrado com id $id")
+            UserNotFoundException("Usuário não encontrado com id $id")
         }
+
 
     fun save(user: User): User {
         val saved = repository.save(user)
@@ -23,4 +26,5 @@ class UserService(private val repository: UserRepository) {
     fun delete(id: Long) {
         repository.deleteById(id)
     }
+    
 }
