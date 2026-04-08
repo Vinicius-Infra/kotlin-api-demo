@@ -33,7 +33,8 @@ class UserController(private val service: UserService) {
     @Operation(summary = "Find user by ID")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "User found"),
-        ApiResponse(responseCode = "404", description = "User not found")
+        ApiResponse(responseCode = "404", description = "User not found"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
     ])
     @GetMapping("/{id}", produces = ["application/json"])
     fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
