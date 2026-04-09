@@ -14,3 +14,7 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /v3/api-docs
+
+api:
+  audit:
+    url: http://localhost:8083/audit/log
