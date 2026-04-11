@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   postgres:
     image: postgres:16
@@ -9,9 +10,19 @@ services:
       POSTGRES_PASSWORD: demo123
       POSTGRES_DB: demo_db
     ports:
-      - "5434:5432"   # usa 5434 no host, já que 5432/5433 estão ocupadas
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-volumes:
+  rabbitmq: # <--- AQUI: Alinhado com o 'postgres' (2 espaços de recuo)
+    image: rabbitmq:3-management
+    container_name: rabbitmq_container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes: # <--- AQUI: No início da linha (coluna 0)
   postgres_data:
