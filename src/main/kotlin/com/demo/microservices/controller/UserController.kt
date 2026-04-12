@@ -2,6 +2,7 @@ package com.demo.microservices.controller
 
 import com.demo.microservices.model.User
 import com.demo.microservices.service.UserService
+import com.demo.microservices.service.KafkaProducerService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
@@ -17,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 @RestController
 @RequestMapping("/users")
 @Tag(name = "User API", description = "Endpoints for managing users")
-class UserController(private val service: UserService) {
+class UserController(private val service: UserService, private val kafkaProducerService: KafkaProducerService) {
 
     @Operation(summary = "find all users", description = "return a users list or 204 status if the list isempty")
     @GetMapping(produces = ["application/json"])
@@ -46,6 +47,7 @@ class UserController(private val service: UserService) {
     @PostMapping(produces = ["application/json"])
     fun createUser(@Valid @RequestBody user: User): ResponseEntity<User> {
     val saved = service.save(user)
+    kafkaProducerService.sendLog("Usuário criado: ${saved.name} | ID: ${saved.id}")
     val uri = URI.create("/users/${saved.id}")
     return ResponseEntity.created(uri).body(saved)
 }

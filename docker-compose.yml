@@ -14,15 +14,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  rabbitmq: # <--- AQUI: Alinhado com o 'postgres' (2 espaços de recuo)
-    image: rabbitmq:3-management
-    container_name: rabbitmq_container
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka_container
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "9092:9092"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      # Essencial para o erro "process.roles"
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093
+      # Garante que o Kafka aceite a criação automática de tópicos
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
 
 volumes: # <--- AQUI: No início da linha (coluna 0)
   postgres_data:
