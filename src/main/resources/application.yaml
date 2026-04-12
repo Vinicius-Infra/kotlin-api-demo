@@ -4,10 +4,17 @@ spring:
     username: demo
     password: demo123
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest  
 
 springdoc:
   swagger-ui:
